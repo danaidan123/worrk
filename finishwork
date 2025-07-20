@@ -77,10 +77,19 @@
             border-radius: 8px;
             margin-bottom: 1rem;
             overflow: hidden;
+            position: relative;
         }
         .tableau-container tableau-viz {
             width: 100%;
             height: 100%;
+        }
+        .error-message {
+            color: #ff4444;
+            font-size: 1rem;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 200, 200, 0.2);
+            border-radius: 8px;
         }
         .fun-fact {
             background: linear-gradient(45deg, #ff6b6b, #ff8e53);
@@ -174,33 +183,35 @@
     <!-- Tableau Embedding API v3 -->
     <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
     <script type="module">
-        // Initialize Tableau Dashboard 1
-        try {
-            const viz1 = document.getElementById('tableau-viz1');
-            const tableauViz1 = document.createElement('tableau-viz');
-            tableauViz1.setAttribute('id', 'tableauViz1');
-            tableauViz1.setAttribute('src', 'https://public.tableau.com/views/work_17530294471900/Sheet4?:language=en-US&:embed=y&:toolbar=n&:tabs=n');
-            tableauViz1.setAttribute('width', '100%');
-            tableauViz1.setAttribute('height', '600');
-            viz1.appendChild(tableauViz1);
-        } catch (error) {
-            console.error('Error loading Tableau Dashboard 1:', error);
-            document.getElementById('tableau-viz1').innerHTML = '<p>שגיאה בטעינת הדשבורד. אנא ודאו שהדשבורד ציבורי וזמין.</p>';
+        // Function to initialize Tableau Viz with error handling
+        function initializeViz(containerId, url, vizId) {
+            try {
+                const container = document.getElementById(containerId);
+                const tableauViz = document.createElement('tableau-viz');
+                tableauViz.setAttribute('id', vizId);
+                tableauViz.setAttribute('src', url);
+                tableauViz.setAttribute('width', '100%');
+                tableauViz.setAttribute('height', '600');
+                tableauViz.setAttribute('toolbar', 'hidden');
+                tableauViz.setAttribute('hide-tabs', 'true');
+                container.appendChild(tableauViz);
+
+                // Add event listener for errors
+                tableauViz.addEventListener('vizloaderror', (e) => {
+                    console.error(`Error loading Tableau Viz ${vizId}:`, e.detail);
+                    container.innerHTML = `<div class="error-message">שגיאה בטעינת הדשבורד: ${e.detail.message}. אנא ודאו שהדשבורד זמין וציבורי ב-Tableau Public.</div>`;
+                });
+            } catch (error) {
+                console.error(`Error initializing Tableau Viz ${vizId}:`, error);
+                document.getElementById(containerId).innerHTML = '<div class="error-message">שגיאה בטעינת הדשבורד. אנא ודאו שהדשבורד ציבורי וזמין.</div>';
+            }
         }
 
+        // Initialize Tableau Dashboard 1
+        initializeViz('tableau-viz1', 'https://public.tableau.com/views/work_17530294471900/Sheet4?:language=en-US&:embed=y&:toolbar=n&:tabs=n', 'tableauViz1');
+
         // Initialize Tableau Dashboard 2
-        try {
-            const viz2 = document.getElementById('tableau-viz2');
-            const tableauViz2 = document.createElement('tableau-viz');
-            tableauViz2.setAttribute('id', 'tableauViz2');
-            tableauViz2.setAttribute('src', 'https://public.tableau.com/views/work2_17530301399520/Sheet3?:language=en-US&:embed=y&:toolbar=n&:tabs=n');
-            tableauViz2.setAttribute('width', '100%');
-            tableauViz2.setAttribute('height', '600');
-            viz2.appendChild(tableauViz2);
-        } catch (error) {
-            console.error('Error loading Tableau Dashboard 2:', error);
-            document.getElementById('tableau-viz2').innerHTML = '<p>שגיאה בטעינת הדשבורד. אנא ודאו שהדשבורד ציבורי וזמין.</p>';
-        }
+        initializeViz('tableau-viz2', 'https://public.tableau.com/views/work2_17530301399520/Sheet3?:language=en-US&:embed=y&:toolbar=n&:tabs=n', 'tableauViz2');
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('nav a').forEach(anchor => {
@@ -212,7 +223,7 @@
         });
 
         // Alert for fun interaction
-        window.onload = function() {
+        window Loaded = function() {
             setTimeout(() => {
                 alert('ברוכים הבאים למרכז ניתוח הנתונים של המרכז האקדמי פרס! 🎉 גלו תובנות מדשבורדים אינטראקטיביים!');
             }, 1000);
