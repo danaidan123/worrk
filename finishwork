@@ -72,17 +72,13 @@
             line-height: 1.5;
         }
         .tableau-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
+            width: 100%;
+            min-height: 600px;
             border-radius: 8px;
             margin-bottom: 1rem;
+            overflow: hidden;
         }
-        .tableau-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .tableau-container tableau-viz {
             width: 100%;
             height: 100%;
         }
@@ -127,6 +123,7 @@
             header h1 { font-size: 2rem; }
             nav { flex-direction: column; gap: 1rem; }
             .section h2 { font-size: 1.5rem; }
+            .tableau-container { min-height: 400px; }
         }
     </style>
 </head>
@@ -147,9 +144,7 @@
             <div class="chart-description">
                 <p>דשבורד זה מציג נתוני מכירות והרשמה לקורסים במרכז האקדמי פרס. התרשימים ממחישים את מספר הנרשמים לקורסים שונים, מגמות מכירות לפי תקופות, וניתוח קטגוריות הקורסים הפופולריות. 🔍</p>
             </div>
-            <div class="tableau-container">
-                <iframe src="https://public.tableau.com/views/work_17530294471900/Sheet4?:language=en-US&:display_count=n&:origin=viz_share_link" frameborder="0"></iframe>
-            </div>
+            <div class="tableau-container" id="tableau-viz1"></div>
             <div class="fun-fact">
                 עובדה מהנה: ויזואליזציה של נתונים יכולה להגביר את ההבנה ב-400%! 😮
             </div>
@@ -159,9 +154,7 @@
             <div class="chart-description">
                 <p>דשבורד זה מתמקד בניתוח דפוסי ההרשמה לקורסים במרכז האקדמי פרס, כולל התפלגות גיאוגרפית של הנרשמים, שיעורי השלמת קורסים, ומגמות עונתיות בהרשמות. 📅</p>
             </div>
-            <div class="tableau-container">
-                <iframe src="https://public.tableau.com/views/work2_17530301399520/Sheet3?:language=en-US&:display_count=n&:origin=viz_share_link" frameborder="0"></iframe>
-            </div>
+            <div class="tableau-container" id="tableau-viz2"></div>
             <div class="fun-fact">
                 עובדה מהנה: נתונים ויזואליים מסייעים לקבל החלטות מהר ב-28%! ⚡
             </div>
@@ -178,7 +171,37 @@
     <footer>
         <p>© 2025 מרכז האקדמי פרס - מרכז ניתוח נתונים. כל הזכויות שמורות. נבנה באהבה ❤️</p>
     </footer>
-    <script>
+    <!-- Tableau Embedding API v3 -->
+    <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
+    <script type="module">
+        // Initialize Tableau Dashboard 1
+        try {
+            const viz1 = document.getElementById('tableau-viz1');
+            const tableauViz1 = document.createElement('tableau-viz');
+            tableauViz1.setAttribute('id', 'tableauViz1');
+            tableauViz1.setAttribute('src', 'https://public.tableau.com/views/work_17530294471900/Sheet4?:language=en-US&:embed=y&:toolbar=n&:tabs=n');
+            tableauViz1.setAttribute('width', '100%');
+            tableauViz1.setAttribute('height', '600');
+            viz1.appendChild(tableauViz1);
+        } catch (error) {
+            console.error('Error loading Tableau Dashboard 1:', error);
+            document.getElementById('tableau-viz1').innerHTML = '<p>שגיאה בטעינת הדשבורד. אנא ודאו שהדשבורד ציבורי וזמין.</p>';
+        }
+
+        // Initialize Tableau Dashboard 2
+        try {
+            const viz2 = document.getElementById('tableau-viz2');
+            const tableauViz2 = document.createElement('tableau-viz');
+            tableauViz2.setAttribute('id', 'tableauViz2');
+            tableauViz2.setAttribute('src', 'https://public.tableau.com/views/work2_17530301399520/Sheet3?:language=en-US&:embed=y&:toolbar=n&:tabs=n');
+            tableauViz2.setAttribute('width', '100%');
+            tableauViz2.setAttribute('height', '600');
+            viz2.appendChild(tableauViz2);
+        } catch (error) {
+            console.error('Error loading Tableau Dashboard 2:', error);
+            document.getElementById('tableau-viz2').innerHTML = '<p>שגיאה בטעינת הדשבורד. אנא ודאו שהדשבורד ציבורי וזמין.</p>';
+        }
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('nav a').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
